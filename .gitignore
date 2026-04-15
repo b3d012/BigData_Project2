@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+venv/
+env/
+.conda/
+
+# VS Code
+.vscode/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Data
+dataset/raw/
+dataset/processed/
+dataset/test1/
+
+# Live/generated artifacts
+live_capture/
+outputs/
+
+# Trained models and generated files
+models/
+*.joblib
+*.pkl
+*.ubj
+*.bin
+*.csv
+*.xlsx
+*.pcap
+*.pcapng
