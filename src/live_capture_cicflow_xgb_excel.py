@@ -7,7 +7,7 @@ python src/live_capture_cicflow_xgb_excel.py `
   --attack-label "Kali Live Test" `
   --excel outputs\live_attack_results.xlsx `
   --min-attack-flows 1 `
-  --max-windows 1
+  --max-windows 5
 """
 
 from __future__ import annotations
