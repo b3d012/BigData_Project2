@@ -1,15 +1,3 @@
-"""
-python src/live_capture_cicflow_xgb_excel.py `
-  --interface 5 `
-  --dumpcap-exe "C:\Program Files\Wireshark\dumpcap.exe" `
-  --cicflowmeter-exe "C:\Users\abdul\miniconda3\envs\cicflow\Scripts\cicflowmeter.exe" `
-  --window-seconds 30 `
-  --attack-label "Kali Live Test" `
-  --excel outputs\live_attack_results.xlsx `
-  --min-attack-flows 1 `
-  --max-windows 5
-"""
-
 from __future__ import annotations
 
 import argparse

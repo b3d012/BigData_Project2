@@ -381,25 +381,6 @@ Important output:
 
 ---
 
-## Optional offline inference sanity check
-
-## 6. Run inference on the saved CIC test split
-
-This checks that the saved baseline model, threshold, schema, and inference path all work correctly.
-
-Run:
-
-```powershell
-python src/predict_xgb_inference.py --input dataset/processed/cicids2017_binary_test.csv --name cic_test_inference
-```
-
-Important outputs:
-
-- `outputs/inference/cic_test_inference_predictions.csv`
-- `outputs/inference/cic_test_inference_summary.json`
-- `outputs/inference/cic_test_inference_metrics.json`
-
----
 
 ## Why the live pipeline uses dumpcap
 
@@ -497,9 +478,9 @@ This captures one 30-second window, processes it, writes the outputs, appends to
 ```powershell
 python src/live_capture_cicflow_xgb_excel.py `
   --interface 5 `
-  --dumpcap-exe "C:\Program Files\Wireshark\dumpcap.exe" `
-  --cicflowmeter-exe "C:\Users\YOUR_USERNAME\miniconda3\envs\cicflow\Scripts\cicflowmeter.exe" `
-  --window-seconds 30 `
+  --dumpcap-exe "C:/Program Files/Wireshark/dumpcap.exe" `
+  --cicflowmeter-exe "C:/Users/YOUR_USERNAME/miniconda3/envs/cicflow/Scripts/cicflowmeter.exe"`
+  --window-seconds 5 `
   --attack-label "Kali Live Test" `
   --excel outputs\live_attack_results.xlsx `
   --min-attack-flows 1 `
@@ -510,6 +491,15 @@ Replace:
 - `5` with the correct interface number
 - `YOUR_USERNAME` with the correct Windows username
 
+python src/live_capture_cicflow_xgb_excel.py `
+  --interface 5 `
+  --dumpcap-exe "C:\Program Files\Wireshark\dumpcap.exe" `
+  --cicflowmeter-exe "C:\Users\abdul\miniconda3\envs\cicflow\Scripts\cicflowmeter.exe" `
+  --window-seconds 30 `
+  --attack-label "Kali Live Test" `
+  --excel outputs\live_attack_results.xlsx `
+  --min-attack-flows 1 `
+  --max-windows 5
 ---
 
 ## 8. Continuous live monitoring
@@ -608,26 +598,23 @@ Recommended order:
 ```bash
 nmap -sn <host_ip>
 ```
-
 ### Window 2
 ```bash
 nmap -sS <host_ip>
 ```
-
 ### Window 3
 ```bash
 nmap -Pn -sS -p 1-1000 <host_ip>
 ```
-
 ### Window 4
 ```bash
 nmap -sV <host_ip>
 ```
-
 ### Window 5
 ```bash
 nmap -A <host_ip>
 ```
+
 
 Recommended practice:
 - do one Nmap type per 30-second window

